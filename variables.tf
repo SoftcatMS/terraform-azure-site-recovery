@@ -34,6 +34,12 @@ variable "existing_vm_primary" {
   default = []
 }
 
+variable "existing_vm_datadisks" {
+  description = "Azure exisiting VM data disk information"  
+  type = list(map(string))
+  default = []
+}
+
 variable "existing_vm_networkinteface_id" {
   type = string
   default = null

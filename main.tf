@@ -126,6 +126,19 @@ resource "azurerm_site_recovery_replicated_vm" "vm-replication" {
     target_replica_disk_type   = each.value.vm_osdisk_type
   }
 
+
+  dynamic "managed_disk" {
+    for_each = { for dd in var.existing_vm_datadisks: dd.vm_datadisk_id => dd }
+
+    content {
+      disk_id                    = managed_disk.value.vm_datadisk_id
+      staging_storage_account_id = azurerm_storage_account.primary.id
+      target_resource_group_id   = azurerm_resource_group.rg_secondary.id
+      target_disk_type           = managed_disk.value.vm_datadisk_type
+      target_replica_disk_type   = managed_disk.value.vm_datadisk_type
+    }
+  }
+
   network_interface {
     source_network_interface_id   = var.existing_vm_networkinteface_id
     target_subnet_name            = azurerm_subnet.secondary.name
